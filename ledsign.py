@@ -47,18 +47,17 @@ transitions = {
 
 # There are escape sequences for colors and fonts. These can be used anywhere in your message. You can change colors mid-message if you want.
 # Note that it actually expects a literal backslash followed by a letter -- these aren't control characters.
-# Colors also come in regular and BRIGHT.
 colors = {
 	"red": "\\a",
-	"RED": "\\b",
+	"bright ": "\\b",
 	"orange": "\\c",
-	"ORANGE": "\\d",
+	"bright orange": "\\d",
 	"yellow": "\\e",
-	"YELLOW": "\\f",
+	"bright yellow": "\\f",
 	"green": "\\g",
-	"GREEN": "\\h",
+	"bright green": "\\h",
 	"layer mix": "\\i",
-	"LAYER MIX": "\\j",
+	"bright layer mix": "\\j",
 	"vertical mix": "\\k",
 	"sawtooth mix": "\\l",
 	"green on red": "\\m", # Why would you ever...
@@ -123,7 +122,7 @@ specialchars = {
 	"^": r"\^",
 	"\\": r"\\",
 	"EOL": "\r", # A line ends with a carriage return. The next line must begin with a transition.
-	"newline": "\r" + transitions["open from right"], # This is a shortcut for adding a new line with a reasonable transition.
+	"newline": "\r" + transitions["open right"], # This is a shortcut for adding a new line with a reasonable transition.
 	"EOM": "\r\r\r" # A command ends with three carriage returns.
 }
 
@@ -139,7 +138,7 @@ def demo():
 
 	# This tells the sign to pay attention. 128 addresses all signs -- apparently you can address individual signs by using a device's ID number (whatever that is).
 	ser.write("~128~");
-	ser.write(FILE1 + transitions["pacman"] + colors["RED"] + "SIPB " + colors["LAYER MIX"]+ "LED!" + newline);
+	ser.write(FILE1 + transitions["pacman"] + colors["bright red"] + "SIPB " + colors["bright layer mix"]+ "LED!" + newline);
 
 	# Colors demo
 	ser.write("Colors:  " + "".join(sorted(colors[s] + "  " + s + "  " for s in colors)) + newline);
@@ -183,7 +182,7 @@ class Handler(SocketServer.StreamRequestHandler):
 			elif line == "[[demo]]": demo();
 			else:
 				ser.write("~128~");
-				ser.write(FILE1 + transitions["open from right"] + format(line) + EOM);
+				ser.write(FILE1 + transitions["open right"] + format(line) + EOM);
 
 Server(("", 41337), Handler).serve_forever();
 
