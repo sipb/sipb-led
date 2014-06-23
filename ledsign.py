@@ -49,7 +49,7 @@ transitions = {
 # Note that it actually expects a literal backslash followed by a letter -- these aren't control characters.
 colors = {
 	"red": "\\a",
-	"bright ": "\\b",
+	"bright red": "\\b",
 	"orange": "\\c",
 	"bright orange": "\\d",
 	"yellow": "\\e",
