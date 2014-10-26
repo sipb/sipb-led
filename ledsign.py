@@ -7,8 +7,10 @@
 #
 import serial, io, sys;
 
-# For now, assume we're writing to /dev/ttyUSB0. 
-ser = serial.Serial("/dev/ttyUSB0");
+def openserial():
+	global ser;
+	# For now, assume we're writing to /dev/ttyUSB0. 
+	ser = serial.Serial("/dev/ttyUSB0");
 
 
 # Source for the next section:   http://wls.wwco.com/ledsigns/m-500/m-500-protocol.php
@@ -184,5 +186,7 @@ class Handler(SocketServer.StreamRequestHandler):
 				ser.write("~128~");
 				ser.write(FILE1 + transitions["open right"] + format(line) + EOM);
 
-Server(("", 41337), Handler).serve_forever();
+if __name__ == "__main__":
+	openserial();
+	Server(("", 41337), Handler).serve_forever();
 

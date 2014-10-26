@@ -1,5 +1,47 @@
 from dirlock import DirLock
+#import ledsign.newline, ledsign.EOM
 import pickle
+
+def initialize(filename="/var/tmp/led-messages"):
+	""" Sets up a new file with a messagelist in it.
+	"""
+	m = MessageList()
+	with DirLock("/tmp/messages.lock"):
+		with open(filename, 'w') as f:
+			pickle.dump(m,f)
+
+def setmsg(name, msg, filename="/var/tmp/led-messages"):
+	""" Sets the message named name to msg.
+	"""
+	with DirLock("/tmp/messages.lock"):
+		with open(filename, 'r') as f:
+			m = pickle.load(f)
+		m.set(name,msg)
+		updatesign(m)
+		with open(filename, 'w') as f:
+			pickle.dump(m,f)
+
+def remove(name, filename="/var/tmp/led-messages"):
+	""" Remove the message named name.
+	"""
+	with DirLock("/tmp/messages.lock"):
+		with open(filename, 'r') as f:
+			m = pickle.load(f)
+		m.remove(name)
+		updatesign(m)
+		with open(filename, 'w') as f:
+			pickle.dump(m,f)
+
+def list(filename="/var/tmp/led-messages"):
+	with DirLock("/tmp/messages.lock"):
+		with open(filename, 'r') as f:
+			m = pickle.load(f)
+			for (name, msg) in m:
+				print(name + ": " + msg)
+
+def updatesign(msglist):
+	print "Updating sign to..."
+	print "\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r" 
 
 class MessageList:
 	# A message list is basically an ordered dictionary 
@@ -8,7 +50,7 @@ class MessageList:
 		self.messageorder = []
 	def set(self, name, msg):
 		assert set(self.messageorder) == set(self.messagedict.keys())
-		if name in self.messagedict.keys()
+		if name in self.messagedict.keys():
 			self.messagedict[name] = msg
 		else:
 			self.messagedict[name] = msg
@@ -19,7 +61,7 @@ class MessageList:
 	def remove(self, name):
 		assert set(self.messageorder) == set(self.messagedict.keys())
 		del self.messagedict[name]
-		self.messagelist.remove(name)
+		self.messageorder.remove(name)
 
 	def __iter__(self):
 		return ((name, self.messagedict[name]) for name in self.messageorder)

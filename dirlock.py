@@ -18,5 +18,5 @@ class DirLock:
 					time.sleep(1) # Try again later.
 				else:
 					raise e
-	def __exit__(self):
+	def __exit__(self, exc_type, exc_value, trace):
 		os.rmdir(self.path)
