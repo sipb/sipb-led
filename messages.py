@@ -43,6 +43,7 @@ def updatesign(msglist):
 	print "Updating sign to..."
 	print "\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r" 
 	try:
+		import socket
 		sock = socket.create_connection(("localhost",41337))
 		sock.send("\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r")
 	finally:
