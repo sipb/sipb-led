@@ -42,6 +42,11 @@ def list(filename="/var/tmp/led-messages"):
 def updatesign(msglist):
 	print "Updating sign to..."
 	print "\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r" 
+	try:
+		sock = socket.create_connection(("localhost",41337))
+		sock.send("\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r")
+	finally:
+		sock.close()
 
 class MessageList:
 	# A message list is basically an ordered dictionary 
