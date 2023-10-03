@@ -183,6 +183,7 @@ class Handler(socketserver.StreamRequestHandler):
 	def handle(self):
 		while True:
 			line = self.rfile.readline().strip().decode("utf-8");
+			print(line)
 			if not line: break;
 			elif line == "[[demo]]": demo();
 			else:
