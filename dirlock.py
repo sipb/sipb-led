@@ -13,7 +13,7 @@ class DirLock:
 			try:
 				os.mkdir(self.path)
 				break
-			except OSError, e:
+			except OSError as e:
 				if e.errno == 17: # File exists -- we're already locked
 					time.sleep(1) # Try again later.
 				else:

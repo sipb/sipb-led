@@ -12,6 +12,9 @@ def openserial():
 	# For now, assume we're writing to /dev/ttyUSB0. 
 	ser = serial.Serial("/dev/ttyUSB0");
 
+def writeString(s):
+    ser.write(s.encode('utf-8'))
+
 
 # Source for the next section:   http://wls.wwco.com/ledsigns/m-500/m-500-protocol.php
 
@@ -139,20 +142,20 @@ def demo():
 	#Demo mode
 
 	# This tells the sign to pay attention. 128 addresses all signs -- apparently you can address individual signs by using a device's ID number (whatever that is).
-	ser.write("~128~");
-	ser.write(FILE1 + transitions["pacman"] + colors["bright red"] + "SIPB " + colors["bright layer mix"]+ "LED!" + newline);
+	writeString("~128~");
+	writeString(FILE1 + transitions["pacman"] + colors["bright red"] + "SIPB " + colors["bright layer mix"]+ "LED!" + newline);
 
 	# Colors demo
-	ser.write("Colors:  " + "".join(sorted(colors[s] + "  " + s + "  " for s in colors)) + newline);
+	writeString("Colors:  " + "".join(sorted(colors[s] + "  " + s + "  " for s in colors)) + newline);
 
 	# Fonts demo
-	ser.write("Fonts:  " + "".join(sorted(fonts[s] + "  " + s + ": Five hazards! Quickly, exit by jumping down.  " for s in fonts)) + newline);
+	writeString("Fonts:  " + "".join(sorted(fonts[s] + "  " + s + ": Five hazards! Quickly, exit by jumping down.  " for s in fonts)) + newline);
 
 	# Transitions demo
-	ser.write("Transitions:" + "".join(sorted(EOL + transitions[s] + s for s in transitions)) + newline);
+	writeString("Transitions:" + "".join(sorted(EOL + transitions[s] + s for s in transitions)) + newline);
 
 	# Graphics demo
-	ser.write("Graphics:  " + "".join(sorted(s + " " + graphics[s] + "     " for s in graphics)) + EOM);
+	writeString("Graphics:  " + "".join(sorted(s + " " + graphics[s] + "     " for s in graphics)) + EOM);
 
 
 
@@ -161,7 +164,7 @@ def demo():
 #Format a string so that it can specify fonts, graphics, colors, etc.
 def format(s):
 	for m in (colors, fonts, graphics, specialchars, transitions):
-		for k, v in m.items():
+		for k, v in list(m.items()):
 			s = s.replace("<"+k+">", v);
 	# So that you can pass a "<" or a ">", we use "<lt>" and "<gt>"
 	# To avoid edge cases like "<lt>gt>", we want to do these replacements simultaneously.
@@ -171,20 +174,20 @@ def format(s):
 	s = s.replace("<\0", "<");
 	return s;
 
-import SocketServer;
+import socketserver;
 
-class Server(SocketServer.TCPServer):
+class Server(socketserver.TCPServer):
 	allow_reuse_address = True;
 
-class Handler(SocketServer.StreamRequestHandler):
+class Handler(socketserver.StreamRequestHandler):
 	def handle(self):
 		while True:
-			line = self.rfile.readline().strip();
+			line = self.rfile.readline().strip().decode("utf-8");
 			if not line: break;
 			elif line == "[[demo]]": demo();
 			else:
-				ser.write("~128~");
-				ser.write(FILE1 + transitions["open right"] + format(line) + EOM);
+				writeString("~128~");
+				writeString(FILE1 + transitions["open right"] + format(line) + EOM);
 
 if __name__ == "__main__":
 	openserial();

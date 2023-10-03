@@ -37,11 +37,11 @@ def list(filename="/var/tmp/led-messages"):
 		with open(filename, 'r') as f:
 			m = pickle.load(f)
 			for (name, msg) in m:
-				print(name + ": " + msg)
+				print((name + ": " + msg))
 
 def updatesign(msglist):
-	print "Updating sign to..."
-	print "\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r" 
+	print("Updating sign to...")
+	print("\\rH".join(msg for (name,msg) in msglist) + "\\r\\r\\r") 
 	try:
 		import socket
 		sock = socket.create_connection(("localhost",41337))
@@ -56,7 +56,7 @@ class MessageList:
 		self.messageorder = []
 	def set(self, name, msg):
 		assert set(self.messageorder) == set(self.messagedict.keys())
-		if name in self.messagedict.keys():
+		if name in list(self.messagedict.keys()):
 			self.messagedict[name] = msg
 		else:
 			self.messagedict[name] = msg
