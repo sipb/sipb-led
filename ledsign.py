@@ -5,7 +5,7 @@
 #  - http://www.avbrand.com/projects/carpc/ledsign/technew.asp
 #  - https://github.com/BrightLedSigns/LedSign
 #
-import serial, io, sys, threading
+import serial, io, sys, threading, dateparser
 
 write_lock = threading.Lock()
 
@@ -232,6 +232,16 @@ class Handler(socketserver.ThreadingMixIn, socketserver.StreamRequestHandler):
                     if line.startswith("<raw>"):
                         line = line[5:]
                         head = ""
+                    elif line.startswith("<settime>"):
+                        parsed = dateparser.parse(line[9:])
+                        if not parsed:
+                            self.wfile.write(b"Bad Date\n")
+                            self.wfile.flush()
+                            continue
+                        self.wfile.write(b"Date OK\n")
+                        self.wfile.flush()
+                        head = "E"
+                        line = parsed.strftime("%u1%y%m%d%H%M%S")
                     else:
                         head = FILE1 + transitions["open right"]
                     writeString("~128~" + head + format(line) + EOM)
