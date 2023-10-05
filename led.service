@@ -1,0 +1,12 @@
+[Unit]
+Description=SIPB LED sign
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=python3 -u /root/sipb-led/ledsign.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
