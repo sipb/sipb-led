@@ -213,11 +213,11 @@ def format(s):
 import socketserver
 
 
-class Server(socketserver.TCPServer):
+class Server(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True
 
 
-class Handler(socketserver.ThreadingMixIn, socketserver.StreamRequestHandler):
+class Handler(socketserver.StreamRequestHandler):
     def handle(self):
         try:
             for line in self.rfile:
