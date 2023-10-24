@@ -12,6 +12,13 @@ See https://wls.wwco.com/ledsigns/m-500/m-500-protocol.php for docs on how to ch
 
 On doorpi.mit.edu, you can check `journalctl -xeu led` for this program's logs.
 
+You can also use the sign interactively by SSHing into doorpi and running in a Python console:
+```
+import serial
+ser = serial.Serial("/dev/ttyUSB0")
+ser.write(b"~128~Hi")
+```
+
 ## Sequencer module
 
 Copied from Mattermost:
